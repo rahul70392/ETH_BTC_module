@@ -21,11 +21,20 @@ connect.then(function (conn) {
                     currency,
                     wallet
                 } = data;
-                console.log(wallet.address, type);
+
                 try {
                     let result = await importaddress(wallet.address);
                     if (result.result === null && result.error === null) {
                         console.log('wallet import success');
+                        new Wallet({
+                            userId: userId,
+                            address: wallet.address,
+                            currency: currency
+                        }).save().then(importAddress => {
+                            console.log(`Address ${wallet.address} save success`);
+                        }).catch(er => {
+                            console.log("wallet save failed try again");
+                        });
                     } else {
                         console.log('wallet import failed');
                     }
