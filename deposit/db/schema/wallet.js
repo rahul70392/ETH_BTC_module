@@ -2,10 +2,18 @@ import mongoose from "mongoose";
 
 const WalletSchema = new mongoose.Schema({
     userId: {
-        type: String
+        type: String,
+        unique: true,
+        trim: true,
+        required: true,
+        index: true
     },
     address: {
-        type: String
+        type: String,
+        unique: true,
+        trim: true,
+        required: true,
+        index: true
     },
     currency: {
         type: String

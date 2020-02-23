@@ -1,7 +1,11 @@
 import mongoose from "mongoose";
 import {
+    BtcDeposit
+} from "./schema/bitcoin";
+import {
     Wallet
 } from "./schema/wallet";
+
 mongoose.Promise = global.Promise;
 let options = {
     useUnifiedTopology: true,
@@ -11,5 +15,6 @@ mongoose.connect(global.config.db_uri, options).then(() =>
     console.log("connected to database")).catch(() => console.error("db connection failed"));
 
 export {
-    Wallet
+    Wallet,
+    BtcDeposit
 };
