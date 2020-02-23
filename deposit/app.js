@@ -5,7 +5,7 @@ import cookieParser from "cookie-parser";
 import logger from "morgan";
 import api from "./routes";
 let app = express();
-
+import "./engine/wallet";
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({
