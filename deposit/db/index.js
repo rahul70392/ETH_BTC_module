@@ -5,6 +5,9 @@ import {
 import {
     Wallet
 } from "./schema/wallet";
+import {
+    Settings
+} from "./schema/settings";
 
 mongoose.Promise = global.Promise;
 let options = {
@@ -16,5 +19,6 @@ mongoose.connect(global.config.db_uri, options).then(() =>
 
 export {
     Wallet,
-    BtcDeposit
+    BtcDeposit,
+    Settings
 };

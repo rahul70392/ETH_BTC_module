@@ -1,7 +1,8 @@
 import bitcoin from "../../utils/bitcoin";
 import {
     Wallet,
-    BtcDeposit
+    BtcDeposit,
+    Settings
 } from "../../db";
 import BN from "bignumber.js";
 import async from "async";
@@ -65,8 +66,8 @@ export const createBtcDeposit = async function (req, res) {
                                             },
                                             userId: response.userId,
                                             txnRef: txn.txid,
-                                            serverTxnRef: txn.txid,
-                                            status: "YES",
+                                            serverTxnRef: btcdeposit._id,
+                                            status: "unconfirmed",
                                             transactionInfo: btcdeposit,
                                             misc: ""
                                         };

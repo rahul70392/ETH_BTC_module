@@ -17,6 +17,10 @@ const WalletSchema = new mongoose.Schema({
     },
     currency: {
         type: String
+    },
+    type: {
+        type: String,
+        default: "ADD_WALLET"
     }
 });
 
