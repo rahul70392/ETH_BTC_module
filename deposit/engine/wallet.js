@@ -2,7 +2,8 @@ import {
     importaddress
 } from "../utils/bitcoin";
 import {
-    Wallet
+    Wallet,
+    Settings
 } from "../db";
 import open from "amqplib";
 let connect = open.connect(global.config.queue_uri);
@@ -26,6 +27,11 @@ connect.then(function (conn) {
                     let result = await importaddress(wallet.address);
                     if (result.result === null && result.error === null) {
                         console.log('wallet import success');
+                        let findWallet = await Wallet.findOne({
+                            userId: userId,
+                            address: wallet.address
+                        });
+                        if (findWallet) return console.log("address already imported");
                         new Wallet({
                             userId: userId,
                             address: wallet.address,
@@ -33,7 +39,7 @@ connect.then(function (conn) {
                         }).save().then(importAddress => {
                             console.log(`Address ${wallet.address} save success`);
                         }).catch(er => {
-                            console.log("wallet save failed try again");
+                            console.log("wallet save failed try again", er);
                         });
                     } else {
                         console.log('wallet import failed');
@@ -46,3 +52,10 @@ connect.then(function (conn) {
         });
     });
 }).catch(console.warn);
+
+//================= save the settings parameters ===========
+setImmediate(async () => {
+    let findSettings = await Settings.find();
+    if (findSettings.length > 0) return false;
+    let save = await Settings().save();
+});

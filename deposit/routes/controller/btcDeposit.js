@@ -1,4 +1,6 @@
-import bitcoin from "../../utils/bitcoin";
+import {
+    gettransaction
+} from "../../utils/bitcoin";
 import {
     Wallet,
     BtcDeposit,
@@ -12,7 +14,7 @@ import {
 export const createBtcDeposit = async function (req, res) {
     try {
         //Query the transaction details
-        let txn = (await bitcoin.gettransaction(req.query.tx)).result;
+        let txn = (await gettransaction(req.query.tx)).result;
 
         /**
          * This amount is with respect to the node.
@@ -36,26 +38,55 @@ export const createBtcDeposit = async function (req, res) {
                         if (response == '' || response == null) return callback();
 
                         let amount = element.amount.toString();
-                        // Deposit
-                        BtcDeposit.findOne({
-                            txHash: txn.txid,
-                            vout: element.vout
-                        }).then((result) => {
-                            if (result == null) {
-                                BtcDeposit({
-                                    userObjectID: response._id,
-                                    user: response.userId,
-                                    sentTo: element.address,
-                                    txHash: txn.txid,
-                                    vout: element.vout,
-                                    amount: amount,
-                                    confirmations: txn.confirmations,
-                                    receiveTimestamp: txn.time * 1000,
-                                    creditStatus: 'PENDING'
-                                }).save().then((btcdeposit) => {
-                                    if (btcdeposit) {
+                        let settings = await Settings.findOne({});
+                        if (BN(amount).gte(settings.minDeposit.bitcoin)) {
+                            // Deposit
+                            BtcDeposit.findOne({
+                                txHash: txn.txid,
+                                vout: element.vout
+                            }).then((result) => {
+                                if (result == null) {
+                                    BtcDeposit({
+                                        userObjectID: response._id,
+                                        user: response.userId,
+                                        sentTo: element.address,
+                                        txHash: txn.txid,
+                                        vout: element.vout,
+                                        amount: amount,
+                                        confirmations: txn.confirmations,
+                                        receiveTimestamp: txn.time * 1000,
+                                        creditStatus: 'unconfirmed'
+                                    }).save().then((btcdeposit) => {
+                                        if (btcdeposit) {
+                                            console.log((new Date().toGMTString()) +
+                                                ' ==> Bitcoin Deposit: ' + txn.txid);
+                                            let qData = {
+                                                amount: amount,
+                                                type: "DEPOSIT",
+                                                currency: "BTC",
+                                                wallet: {
+                                                    address: element.address,
+                                                    tag: ""
+                                                },
+                                                userId: response.userId,
+                                                txnRef: txn.txid,
+                                                serverTxnRef: btcdeposit._id,
+                                                status: "unconfirmed",
+                                                transactionInfo: btcdeposit,
+                                                misc: ""
+                                            };
+                                            depositQueue(qData);
+                                            callback();
+                                        }
+                                    }).catch((err) => {
+                                        console.log((new Date().toGMTString()) + ' ==> ' + err);
+                                        callback(err);
+                                    });
+                                } else {
+                                    result.creditStatus = "confirmed";
+                                    result.save().then(txnConfirm => {
                                         console.log((new Date().toGMTString()) +
-                                            ' ==> Bitcoin Deposit: ' + txn.txid);
+                                            ' ==> Bitcoin Deposit confirm: ' + txn.txid);
                                         let qData = {
                                             amount: amount,
                                             type: "DEPOSIT",
@@ -66,26 +97,25 @@ export const createBtcDeposit = async function (req, res) {
                                             },
                                             userId: response.userId,
                                             txnRef: txn.txid,
-                                            serverTxnRef: btcdeposit._id,
-                                            status: "unconfirmed",
-                                            transactionInfo: btcdeposit,
+                                            serverTxnRef: txnConfirm._id,
+                                            status: "confirmed",
+                                            transactionInfo: txnConfirm,
                                             misc: ""
                                         };
                                         depositQueue(qData);
                                         callback();
-                                    }
-                                }).catch((err) => {
-                                    console.log((new Date().toGMTString()) + ' ==> ' + err);
-                                    callback(err);
-                                });
-                            } else {
-                                callback();
-                            }
-                        }).catch((err) => {
-                            console.log((new Date().toGMTString()) + ' ==> ' + err);
-                            callback(err);
-                        });
-
+                                    }).catch(er => {
+                                        callback(er);
+                                    });
+                                }
+                            }).catch((err) => {
+                                console.log((new Date().toGMTString()) + ' ==> ' + err);
+                                callback(err);
+                            });
+                        } else {
+                            console.log((new Date().toGMTString()) + ' ==> User Minimum Bitcoin Deposit: ' + txn.txid);
+                            callback();
+                        }
                     }).catch((err) => {
                         console.log((new Date().toGMTString()) + ' ==> ' + err);
                         callback(err);
