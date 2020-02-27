@@ -84,29 +84,30 @@ export const createBtcDeposit = async function (req, res) {
                                     });
                                 } else {
                                     result.creditStatus = "confirmed";
-                                    result.save().then(txnConfirm => {
-                                        console.log((new Date().toGMTString()) +
-                                            ' ==> Bitcoin Deposit confirm: ' + txn.txid);
-                                        let qData = {
-                                            amount: amount,
-                                            type: "DEPOSIT",
-                                            currency: "BTC",
-                                            wallet: {
-                                                address: element.address,
-                                                tag: ""
-                                            },
-                                            userId: response.userId,
-                                            txnRef: txn.txid,
-                                            serverTxnRef: txnConfirm._id,
-                                            status: "confirmed",
-                                            transactionInfo: txnConfirm,
-                                            misc: ""
-                                        };
-                                        depositQueue(qData);
-                                        callback();
-                                    }).catch(er => {
-                                        callback(er);
-                                    });
+                                    result.confirmations = txn.confirmations,
+                                        result.save().then(txnConfirm => {
+                                            console.log((new Date().toGMTString()) +
+                                                ' ==> Bitcoin Deposit confirm: ' + txn.txid);
+                                            let qData = {
+                                                amount: amount,
+                                                type: "DEPOSIT",
+                                                currency: "BTC",
+                                                wallet: {
+                                                    address: element.address,
+                                                    tag: ""
+                                                },
+                                                userId: response.userId,
+                                                txnRef: txn.txid,
+                                                serverTxnRef: txnConfirm._id,
+                                                status: "confirmed",
+                                                transactionInfo: txnConfirm,
+                                                misc: ""
+                                            };
+                                            depositQueue(qData);
+                                            callback();
+                                        }).catch(er => {
+                                            callback(er);
+                                        });
                                 }
                             }).catch((err) => {
                                 console.log((new Date().toGMTString()) + ' ==> ' + err);
