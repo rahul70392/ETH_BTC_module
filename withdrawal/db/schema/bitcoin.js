@@ -80,5 +80,41 @@ BitcoinDepositSchema.index({
     movementStatus: 1
 });
 
+const BitcoinWithdrawalSchema = new mongoose.Schema({
+    userId: {
+        type: String,
+    },
+    currency: {
+        type: String
+    },
+    type: {
+        type: String,
+    },
+    status: {
+        type: String
+    },
+    amount: {
+        type: String
+    },
+    raw_transaction: {
+        type: String
+    },
+    serverTxnRef: {
+        type: String
+    },
+    address: {
+        type: String
+    },
+    created_at: {
+        type: Date,
+        default: Date.now
+    },
+});
 
-export const BtcDeposit = mongoose.model('BtcDeposit', BitcoinDepositSchema);
+const BtcWithdrawal = mongoose.model('BtcWithdrawal', BitcoinWithdrawalSchema);
+const BtcDeposit = mongoose.model('BtcDeposit', BitcoinDepositSchema);
+
+export {
+    BtcWithdrawal,
+    BtcDeposit
+};

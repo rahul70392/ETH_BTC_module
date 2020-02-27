@@ -26,7 +26,7 @@ connect.then(function (conn) {
                 try {
                     let result = await importaddress(wallet.address);
                     if (result.result === null && result.error === null) {
-                        console.log('wallet import success');
+
                         let findWallet = await Wallet.findOne({
                             userId: userId,
                             address: wallet.address

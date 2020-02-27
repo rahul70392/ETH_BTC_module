@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import {
+    BtcWithdrawal,
     BtcDeposit
 } from "./schema/bitcoin";
 import {
@@ -20,5 +21,6 @@ mongoose.connect(global.config.db_uri, options).then(() =>
 export {
     Wallet,
     BtcDeposit,
+    BtcWithdrawal,
     Settings
 };

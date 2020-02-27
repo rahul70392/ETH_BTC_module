@@ -21,7 +21,11 @@ const WalletSchema = new mongoose.Schema({
     type: {
         type: String,
         default: "ADD_WALLET"
-    }
+    },
+    created_at: {
+        type: Date,
+        default: Date.now
+    },
 });
 
 export const Wallet = mongoose.model('Wallet', WalletSchema);
