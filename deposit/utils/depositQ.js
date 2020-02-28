@@ -1,7 +1,7 @@
 import open from "amqplib";
 let connect = open.connect(global.config.queue_uri);
 let depositQ = 'bxlend-deposit';
-// Publisher
+// send deposit success response to user
 export const depositQueue = async (data) => {
     connect.then(function (conn) {
         return conn.createChannel();

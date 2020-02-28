@@ -1,7 +1,7 @@
 import open from "amqplib";
 let connect = open.connect(global.config.queue_uri);
 let depositQ = 'bxlend-withdrawal-response';
-// Publisher
+// send withdrawal success response to user
 export const withdrawalResponseQueue = async (data) => {
     connect.then(function (conn) {
         return conn.createChannel();
