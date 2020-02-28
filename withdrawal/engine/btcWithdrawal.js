@@ -73,7 +73,7 @@ export const btcWithdrawalProcess = async (type, userId, currency, amount, raw_t
                             userId: userId,
                             currency: currency,
                             amount: amount,
-                            transaction: "",
+                            transaction: {},
                             status: "failed",
                             serverTxnRef: serverTxnRef,
                             wallet: {
@@ -85,6 +85,20 @@ export const btcWithdrawalProcess = async (type, userId, currency, amount, raw_t
                     }
                 }).catch((err) => {
                     console.log((new Date().toGMTString()) + ' ==> ' + err);
+                    let data = {
+                        type: "WITHDRAW_RESPONSE",
+                        userId: userId,
+                        currency: currency,
+                        amount: amount,
+                        transaction: {},
+                        status: "failed",
+                        serverTxnRef: serverTxnRef,
+                        wallet: {
+                            address: wallet.address,
+                            tag: ""
+                        }
+                    };
+                    withdrawalResponseQueue(data);
                 });
             }
         } else {
@@ -94,7 +108,7 @@ export const btcWithdrawalProcess = async (type, userId, currency, amount, raw_t
                 userId: userId,
                 currency: currency,
                 amount: amount,
-                transaction: "",
+                transaction: {},
                 status: "failed",
                 serverTxnRef: serverTxnRef,
                 wallet: {
@@ -106,6 +120,20 @@ export const btcWithdrawalProcess = async (type, userId, currency, amount, raw_t
         }
 
     } catch (error) {
-        console.log('connection failed RPC url');
+        console.log('connection failed RPC url or Invalid input', error);
+        let data = {
+            type: "WITHDRAW_RESPONSE",
+            userId: userId,
+            currency: currency,
+            amount: amount,
+            transaction: {},
+            status: "failed",
+            serverTxnRef: serverTxnRef,
+            wallet: {
+                address: wallet.address,
+                tag: ""
+            }
+        };
+        withdrawalResponseQueue(data);
     }
 };
