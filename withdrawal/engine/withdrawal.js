@@ -25,6 +25,7 @@ connect.then(function (conn) {
                     serverTxnRef
                 } = data;
                 if (currency == "BTC") {
+                    console.log("BTC withdrawal process");
                     btcWithdrawalProcess(type, userId, currency, amount, raw_transaction, wallet, serverTxnRef);
                 } else if (currency == "ETH") {
                     console.log(" Eth withdrawal function");
