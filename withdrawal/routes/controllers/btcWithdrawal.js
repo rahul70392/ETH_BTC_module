@@ -18,11 +18,11 @@ export const transaction = async (req, res) => {
             .from(a)
             .to('mmwPXumSaAsEcStZkTM3McWnqz9RsU9uTB', 50000)
             .change("mnn5w2YTPNPTdVm7Q1qAPFLPL6kPpWXjva")
-            .fee(50000)
+            .fee(80000)
             .sign(privateKey)
             .serialize();
 
-        console.log("withdrawFunds>>>>>>>>>>>transaction>", transaction);
+        console.log("withdrawFunds>>>>>>>>>>>transaction>", transaction.toString());
         // console.log(transaction.serialize(), "transserialixe")
         // let sendTx = await sendrawtransaction(transaction.toString());
         // console.log("send trxn", sendTx);

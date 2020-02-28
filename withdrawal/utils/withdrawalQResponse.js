@@ -9,5 +9,7 @@ export const withdrawalResponseQueue = async (data) => {
         return ch.assertQueue(depositQ).then(function (ok) {
             return ch.sendToQueue(depositQ, Buffer.from(JSON.stringify(data)));
         });
-    }).catch(console.warn);
+    }).catch(err => {
+        console.log("connection failed Q", err);
+    });
 };

@@ -93,6 +93,9 @@ const BitcoinWithdrawalSchema = new mongoose.Schema({
     status: {
         type: String
     },
+    transactionHash: {
+        type: String
+    },
     amount: {
         type: String
     },
@@ -110,7 +113,11 @@ const BitcoinWithdrawalSchema = new mongoose.Schema({
         default: Date.now
     },
 });
-
+BitcoinWithdrawalSchema.index({
+    type: 1,
+    userId: 1,
+    status: 1,
+});
 const BtcWithdrawal = mongoose.model('BtcWithdrawal', BitcoinWithdrawalSchema);
 const BtcDeposit = mongoose.model('BtcDeposit', BitcoinDepositSchema);
 

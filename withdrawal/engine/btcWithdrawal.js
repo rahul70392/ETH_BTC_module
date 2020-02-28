@@ -5,6 +5,9 @@ import {
     Wallet,
     BtcWithdrawal
 } from "../db";
+import {
+    withdrawalResponseQueue
+} from "../utils/withdrawalQResponse";
 
 export const btcWithdrawalProcess = async (type, userId, currency, amount, raw_transaction, wallet, serverTxnRef) => {
 
@@ -15,18 +18,36 @@ export const btcWithdrawalProcess = async (type, userId, currency, amount, raw_t
                 userId: userId,
                 amount: amount,
                 type: type,
-                token: currency,
+                currency: currency,
                 status: "PROCESSING",
+                transactionHash: txResult.result,
                 raw_transaction: raw_transaction,
                 address: wallet.address,
                 serverTxnRef: serverTxnRef
-            }).save((result) => {
-                if (result.n >= 1 && result.nModified >= 1 && result.ok == 1) {
+            }).save().then(result => {
+                console.log(result);
+                if (result) {
 
                     console.log((new Date().toGMTString()) + ' ==> BTC: ' +
                         txResult.result + ' Amount: ' + amount);
                     // postBtcWithdrawal(id, withdrawals, actualFee, txResult.result);
-                    //===== send Q response   =====
+                    //======= send btc Q response ==============
+                    let data = {
+                        type: "WITHDRAW_RESPONSE",
+                        userId: userId,
+                        currency: currency,
+                        amount: amount,
+                        transaction: result,
+                        status: "PROCESSING",
+                        serverTxnRef: serverTxnRef,
+                        wallet: {
+                            address: wallet.address,
+                            tag: ""
+                        }
+                    };
+                    withdrawalResponseQueue(data);
+                } else {
+                    console.log("save withdrawal failed");
                 }
             }).catch((err) => {
                 console.log((new Date().toGMTString()) + ' ==> ' + err);
