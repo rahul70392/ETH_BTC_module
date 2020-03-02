@@ -29,11 +29,7 @@ const EtherDepositSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    amountActual: {
-        type: String,
-        required: true
-    },
-    amountFixed: {
+    amount: {
         type: String
     },
     status: {

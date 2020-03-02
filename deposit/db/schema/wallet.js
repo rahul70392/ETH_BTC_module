@@ -11,12 +11,14 @@ const WalletSchema = new mongoose.Schema({
         type: String,
         unique: true,
         trim: true,
+        sparse: true,
         index: true
     },
     ethAddress: {
         type: String,
         unique: true,
         trim: true,
+        sparse: true,
         index: true
     },
     currency: {

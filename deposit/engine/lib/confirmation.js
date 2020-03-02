@@ -26,12 +26,28 @@ export const updateEthConfirmations = function (blocknumber) {
                     element.confirmations = 2;
                     element.status = 100;
                     element.statusText = 'SUCCESS';
+                    element.creditStatus = 'SUCCESS';
                     element.save().then(async (result) => {
                         if (result) {
                             console.log((new Date().toGMTString()) +
                                 ' ==> Ether Deposit Confirmed: ' + result.txHash);
                             //======= add Q ======
-                            depositQueue(result);
+                            let qData = {
+                                amount: element.amount,
+                                type: "DEPOSIT",
+                                currency: "ETH",
+                                wallet: {
+                                    address: element.sentTo,
+                                    tag: ""
+                                },
+                                userId: response.userId,
+                                txnRef: result.txHash,
+                                serverTxnRef: result._id,
+                                status: "confirmed",
+                                transactionInfo: result,
+                                misc: ""
+                            };
+                            depositQueue(qData);
                         }
                     }).catch((err) => {
                         console.log((new Date().toGMTString()) + ' ==> ' + err);
