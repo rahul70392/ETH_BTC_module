@@ -8,6 +8,13 @@ import {
 import {
     Settings
 } from "./schema/settings";
+import {
+    Admin
+} from "./schema/admin";
+import {
+    EthDeposit
+} from "./schema/ethereum";
+
 
 mongoose.Promise = global.Promise;
 let options = {
@@ -20,5 +27,7 @@ mongoose.connect(global.config.db_uri, options).then(() =>
 export {
     Wallet,
     BtcDeposit,
-    Settings
+    Settings,
+    Admin,
+    EthDeposit
 };

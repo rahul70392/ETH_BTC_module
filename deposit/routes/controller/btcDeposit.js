@@ -33,7 +33,7 @@ export const createBtcDeposit = async function (req, res) {
                 if (element.category === 'receive') {
                     //Check whether this transaction for our users deposit address or return
                     Wallet.findOne({
-                        address: element.address
+                        btcAddress: element.address
                     }).then(async (response) => {
                         if (response == '' || response == null) return callback();
 

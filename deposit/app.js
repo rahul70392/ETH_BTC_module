@@ -6,7 +6,7 @@ import logger from "morgan";
 import api from "./routes";
 let app = express();
 app.use(cors());
-import "./engine/wallet";
+import "./engine";
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({

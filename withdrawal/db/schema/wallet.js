@@ -8,7 +8,14 @@ const WalletSchema = new mongoose.Schema({
         required: true,
         index: true
     },
-    address: {
+    btcAddress: {
+        type: String,
+        unique: true,
+        trim: true,
+        required: true,
+        index: true
+    },
+    ethAddress: {
         type: String,
         unique: true,
         trim: true,
