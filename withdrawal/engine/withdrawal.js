@@ -9,7 +9,7 @@ import {
 } from "../db";
 import open from "amqplib";
 let connect = open.connect(global.config.queue_uri);
-let walletQ = 'bxlend-withdrawall';
+let walletQ = 'bxlend-withdrawal';
 
 connect.then(function (conn) {
     return conn.createChannel();
