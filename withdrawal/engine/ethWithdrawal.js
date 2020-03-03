@@ -42,7 +42,7 @@ export const ethWithdrawalProcess = async (type, userId, currency, amount, raw_t
                 amount: amount,
                 type: type,
                 currency: currency,
-                status: "unconfirmed",
+                status: "UNCONFIRMED",
                 transactionHash: txResult,
                 raw_transaction: raw_transaction,
                 address: wallet.address,
@@ -60,7 +60,7 @@ export const ethWithdrawalProcess = async (type, userId, currency, amount, raw_t
                         currency: currency,
                         amount: amount,
                         transaction: result,
-                        status: "unconfirmed",
+                        status: "UNCONFIRMED",
                         serverTxnRef: serverTxnRef,
                         wallet: {
                             address: wallet.address,
