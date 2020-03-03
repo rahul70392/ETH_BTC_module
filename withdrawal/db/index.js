@@ -9,6 +9,10 @@ import {
 import {
     Settings
 } from "./schema/settings";
+import {
+    EthDeposit,
+    EthWithdrawal
+} from "./schema/ethereum";
 
 mongoose.Promise = global.Promise;
 let options = {
@@ -22,5 +26,7 @@ export {
     Wallet,
     BtcDeposit,
     BtcWithdrawal,
+    EthDeposit,
+    EthWithdrawal,
     Settings
 };

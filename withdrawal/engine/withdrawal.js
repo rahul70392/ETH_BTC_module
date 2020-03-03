@@ -2,11 +2,14 @@ import {
     btcWithdrawalProcess
 } from "./btcWithdrawal";
 import {
+    ethWithdrawalProcess
+} from "./ethWithdrawal";
+import {
     Settings,
 } from "../db";
 import open from "amqplib";
 let connect = open.connect(global.config.queue_uri);
-let walletQ = 'bxlend-withdrawal';
+let walletQ = 'bxlend-withdrawall';
 
 connect.then(function (conn) {
     return conn.createChannel();
@@ -29,6 +32,7 @@ connect.then(function (conn) {
                     btcWithdrawalProcess(type, userId, currency, amount, raw_transaction, wallet, serverTxnRef);
                 } else if (currency == "ETH") {
                     console.log(" Eth withdrawal function");
+                    ethWithdrawalProcess(type, userId, currency, amount, raw_transaction, wallet, serverTxnRef);
                 } else {
                     console.log("please select the currency ETH or BTC");
                 }
