@@ -12,8 +12,13 @@ import {
 import {
     withdrawalResponseQueue
 } from "../utils/withdrawalQResponse";
+import {
+    gettransaction
+} from "../utils/bitcoin";
 import web3 from "../utils/web3";
 import open from "amqplib";
+import R from "ramda";
+const Hashes = R.pluck('transactionHash');
 let connect = open.connect(global.config.queue_uri);
 let walletQ = 'bxlend-withdrawal';
 
@@ -94,4 +99,42 @@ setInterval(async () => {
     } catch (error) {
         console.log((new Date().toGMTString()) + ' ==> ' + error);
     }
-}, 5000);
+}, 120000);
+
+//====== update BTC withdrawal status ========
+setInterval(async () => {
+    try {
+
+        let btcWithdrawals = await BtcWithdrawal.find({
+            type: "WITHDRAW",
+            currency: "BTC",
+            status: "UNCONFIRMED"
+        });
+        if (btcWithdrawals.length === 0) return;
+
+        const allHashes = [...new Set(Hashes(btcWithdrawals))];
+        allHashes.forEach(async mHash => {
+            let txn = (await gettransaction(mHash)).result;
+            if (txn.confirmations < 1) return;
+
+            // Update User Withdrawal Status
+            BtcWithdrawal.updateMany({
+                type: "WITHDRAW",
+                currency: "BTC",
+                transactionHash: mHash
+            }, {
+                $set: {
+                    status: 'SUCCESS'
+                }
+            }).then((response) => {
+                if (response.n >= 1 && response.nModified >= 1 && response.ok == 1)
+                    console.log((new Date().toGMTString()) + ' ==> BTC Withdrawal Status Confirmed. Hash: ', mHash);
+            }).catch((err) => {
+                console.log((new Date().toGMTString()) + ' ==> ' + err);
+            });
+
+        });
+    } catch (error) {
+        console.log((new Date().toGMTString()) + ' ==> ' + error);
+    }
+}, 600000);
