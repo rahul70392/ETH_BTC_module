@@ -129,6 +129,28 @@ setInterval(async () => {
             }).then((response) => {
                 if (response.n >= 1 && response.nModified >= 1 && response.ok == 1)
                     console.log((new Date().toGMTString()) + ' ==> BTC Withdrawal Status Confirmed. Hash: ', mHash);
+                BtcWithdrawal.findOne({
+                    type: "WITHDRAW",
+                    currency: "BTC",
+                    transactionHash: mHash
+                }).then(element => {
+                    let data = {
+                        type: "WITHDRAW_RESPONSE",
+                        userId: element.userId,
+                        currency: element.currency,
+                        amount: element.amount,
+                        transaction: element,
+                        status: element.status,
+                        serverTxnRef: element.serverTxnRef,
+                        wallet: {
+                            address: element.address,
+                            tag: ""
+                        }
+                    };
+                    withdrawalResponseQueue(data);
+                }).catch(err => {
+                    console.log((new Date().toGMTString()) + ' ==> ' + err);
+                });
             }).catch((err) => {
                 console.log((new Date().toGMTString()) + ' ==> ' + err);
             });
