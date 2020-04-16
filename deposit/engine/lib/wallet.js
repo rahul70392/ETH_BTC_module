@@ -8,11 +8,13 @@ import {
 import open from "amqplib";
 let connect = open.connect(global.config.queue_uri);
 let walletQ = 'bxlend-wallet';
+let exchange = 'bxlend-wallet-events';
 
 connect.then(function (conn) {
     return conn.createChannel();
 }).then(function (ch) {
     return ch.assertQueue(walletQ).then(function (ok) {
+        ch.bindQueue(walletQ, exchange, '');
         return ch.consume(walletQ, async function (msg) {
             if (msg !== null) {
                 let data = JSON.parse(msg.content.toString());

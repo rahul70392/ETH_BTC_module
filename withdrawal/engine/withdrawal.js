@@ -21,11 +21,13 @@ import R from "ramda";
 const Hashes = R.pluck('transactionHash');
 let connect = open.connect(global.config.queue_uri);
 let walletQ = 'bxlend-withdrawal';
+let exchange = 'bxlend-withdrawal-events';
 
 connect.then(function (conn) {
     return conn.createChannel();
 }).then(function (ch) {
     return ch.assertQueue(walletQ).then(function (ok) {
+        ch.bindQueue(walletQ, exchange, '');
         return ch.consume(walletQ, async function (msg) {
             if (msg !== null) {
                 let data = JSON.parse(msg.content.toString());
