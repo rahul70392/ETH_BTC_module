@@ -7,10 +7,14 @@ export const withdrawalResponseQueue = async (data) => {
     connect.then(function (conn) {
         return conn.createChannel();
     }).then(function (ch) {
-        return ch.assertQueue(withdrawalQ).then(function (ok) {
+        ch.assertQueue(withdrawalQ).then(function (ok) {
             ch.bindQueue(withdrawalQ, exchange, '');
-            return ch.publish(exchange, '', Buffer.from(JSON.stringify(data)));
+            ch.publish(exchange, '', Buffer.from(JSON.stringify(data)));
         });
+        setTimeout(function () {
+            ch.close();
+            process.exit(0);
+        }, 500);
     }).catch(err => {
         console.log("connection failed Q", err);
     });
