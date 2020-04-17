@@ -134,6 +134,6 @@ export const btcWithdrawalProcess = async (type, userId, currency, amount, raw_t
                 tag: ""
             }
         };
-        withdrawalResponseQueue(data);
+        return withdrawalResponseQueue(data);
     }
 };

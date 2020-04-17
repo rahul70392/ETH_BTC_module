@@ -35,7 +35,7 @@ export const ethWithdrawalProcess = async (type, userId, currency, amount, raw_t
         }
 
         let txResult = web3.eth.sendRawTransaction(raw_transaction);
-
+        console.log(txResult);
         if (txResult) {
             new EthWithdrawal({
                 userId: userId,
@@ -135,6 +135,6 @@ export const ethWithdrawalProcess = async (type, userId, currency, amount, raw_t
                 tag: ""
             }
         };
-        withdrawalResponseQueue(data);
+        return withdrawalResponseQueue(data);
     }
 };
