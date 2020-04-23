@@ -40,7 +40,7 @@ export const updateEthConfirmations = function (blocknumber) {
                                     address: element.sentTo,
                                     tag: ""
                                 },
-                                userId: response.userId,
+                                userId: element.user,
                                 txnRef: result.txHash,
                                 serverTxnRef: result._id,
                                 status: "confirmed",
